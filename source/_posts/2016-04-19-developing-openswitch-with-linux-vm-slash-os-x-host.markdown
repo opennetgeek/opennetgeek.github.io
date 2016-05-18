@@ -6,6 +6,8 @@ comments: true
 categories: [Linux, Mac, OpenSwitch, OS X]
 ---
 
+{% img center /images/ops-mac.jpg 'OpenSwitch on Mac' 'OpenSwitch on Mac' %}
+
 __Note__: This article was [originally published here](https://opennetgeek.wordpress.com/2016/04/19/developing-openswitch-with-linux-vmos-x-host/).
 
 One of the purposes when we designed the build system in OpenSwitch, was to make it possible to develop on as many environments as possible. If you have some background with developing networking firmware, the typical developer love to have this VM where everything works perfectly, but makes it impossible to work in your laptop at 30000 feet. This is not really a sin (as long as you can have the VM hosted in your machine), but the problem is that usually is some IT team on charge of the VMs setup, and the deployment is not handled by some automated/version-controlled code.
