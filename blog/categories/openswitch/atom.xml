@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[The Open Network Geek Blog]]></title>
-  <link href="http://opennetgeek.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Openswitch | The Open Network Geek Blog]]></title>
+  <link href="http://opennetgeek.github.io/blog/categories/openswitch/atom.xml" rel="self"/>
   <link href="http://opennetgeek.github.io/"/>
   <updated>2016-05-18T16:47:34-06:00</updated>
   <id>http://opennetgeek.github.io/</id>
@@ -18,7 +18,7 @@
     <link href="http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/"/>
     <updated>2016-04-19T14:58:23-06:00</updated>
     <id>http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host</id>
-    <content type="html"><![CDATA[<p><img class="center" src="http://opennetgeek.github.io/images/ops-mac.jpg" title="OpenSwitch on Mac" alt="OpenSwitch on Mac"></p>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/ops-mac.jpg" title="&lsquo;OpenSwitch on Mac&rsquo; &lsquo;OpenSwitch on Mac&rsquo;" ></p>
 
 <p><strong>Note</strong>: This article was <a href="https://opennetgeek.wordpress.com/2016/04/19/developing-openswitch-with-linux-vmos-x-host/">originally published here</a>.</p>
 
@@ -61,17 +61,12 @@
 
 <p>If you are behind a corporate firewall, be sure to setup your corporate proxies in your user environment:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cat &lt;&lt;EOF &gt;&gt;~/.profile
-</span><span class='line'>export http_proxy=http://your.proxy.com:port
-</span><span class='line'>export https_proxy=http://your.proxy.com:port
-</span><span class='line'>EOF
-</span><span class='line'>source ~/.profile</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>cat &lt;&lt;EOF &gt;&gt;~/.profile
+export http_proxy=http://your.proxy.com:port
+export https_proxy=http://your.proxy.com:port
+EOF
+source ~/.profile
+</code></pre>
 
 <p>If my case, I may be roaming between the office and home, so sometimes I don&rsquo;t use a proxy, in which case I find easy to unset the variables and be able to work. So, I don&rsquo;t like to wire the apt configuration with the proxy as <a href="http://askubuntu.com/questions/257290/configure-proxy-for-apt">explained here</a>, instead I like to run the apt-get command with &lsquo;sudo -E&rsquo; parameter so that it inherits my environment variables and uses the proxy if I have it defined.</p>
 
@@ -79,37 +74,31 @@
 
 <p>First, I usually disable asking password for my user:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo visudo -f /etc/sudoers.d/passwordless-user</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo visudo -f /etc/sudoers.d/passwordless-user
+</code></pre>
 
 <p>Then enter a line like the following (replace your username):</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>username ALL=(ALL) NOPASSWD:ALL</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>username ALL=(ALL) NOPASSWD:ALL
+</code></pre>
 
 <p>Next, let&rsquo;s update the apt package cache:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo apt-get update
+</code></pre>
 
 <h2>Networking Setup</h2>
 
 <p>The initial installation will configure the machine out of the box to have DHCP on the first network interface, so we will need to add the second interface for automatic startup. So I will add the following lines to /etc/network/interfaces:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>auto eth1
-</span><span class='line'>iface eth1 inet dhcp</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>auto eth1
+iface eth1 inet dhcp
+</code></pre>
 
 <p>Then, bring the interface up:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo ifup eth1</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo ifup eth1
+</code></pre>
 
 <p><strong>Update</strong>: if you are using 16.04, the network interfaces have different names (to understand why and revert it if you want, take a look here). Run &lsquo;ifconfig -a&rsquo; to find the name of your interfaces.</p>
 
@@ -117,43 +106,36 @@
 
 <p>dnsmasq: the build system fetches constantly from the servers in order to use the shared states to speed the build. So using a local DNS cache will help reduce the pressure on your DNS (and may save you from raising flags about the high rate of request your machine will be doing).</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install dnsmasq</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo apt-get install dnsmasq
+</code></pre>
 
 <p><strong>Update</strong>: if you are using 16.04, dnsmasq won&rsquo;t work out of the box since it conflicts with the dnsmasq used by the LXC container daemon. I worked around by disabling LXC (but maybe that solution doesn&rsquo;t work for you):</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo systemctl stop lxc lxc-net
-</span><span class='line'>sudo systemctl disable lxc lxc-net</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo systemctl stop lxc lxc-net
+sudo systemctl disable lxc lxc-net
+</code></pre>
 
 <p>nss-mdns: this is the name service resolution to use multicast DNS. This allows the Linux machine to resolve (and as side effect of dependencies, advertise) .local addresses and makes communication with the Mac simpler.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install libnss-mdns</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo apt-get install libnss-mdns
+</code></pre>
 
 <p>After this is installed, you should be able to reach your machine with the .local name. Lets say your Linux machine is named linuxvm, then you should be able to run from your Mac:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ping linuxvm.local</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>ping linuxvm.local
+</code></pre>
 
 <h2>Headless VM</h2>
 
 <p>After the initial networking setup is ready, I like to run the VM in headless mode from the OS X terminal. To do that, I shutdown the VM from the VirtualBox UI and close the application. Then from an OS X Terminal I can start the VM in the background with (replace the LinuxVM name with the name of your VM:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>VBoxHeadless --startvm LinuxVM --vrde off &</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>VBoxHeadless --startvm LinuxVM --vrde off &amp;
+</code></pre>
 
 <p>This will run on the background and as long as you don&rsquo;t close the terminal, the VM will run. Next, I usually connect to the VM from the terminal with (using the mDNS .local resolution):</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh -Y username@linuxvm.local</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>ssh -Y username@linuxvm.local
+</code></pre>
 
 <p>The -Y automatically exports X11 apps into my Mac XQuartz, in case you want to use some graphical program from Linux.</p>
 
@@ -161,11 +143,9 @@
 
 <p>Create a workspace directory on /ws. This is just an standard I follow  of putting all my work on a separate directory. Makes easier to fine-control the NFS exports from my Linux machine into my Mac host.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mkdir /ws
-</span><span class='line'>sudo chown $USER /ws</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo mkdir /ws
+sudo chown $USER /ws
+</code></pre>
 
 <h3>NFS Server Share Setup</h3>
 
@@ -173,33 +153,28 @@
 
 <p>Install the NFS server daemon:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install nfs-kernel-server</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo apt-get install nfs-kernel-server
+</code></pre>
 
 <p>Configure the /etc/exports file with the following line to allow your Mac host to access the files under /ws with the same user permissions as your Linux user (assuming your user ID is 1000, you can find that with the &lsquo;id&rsquo; command).</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/ws 192.168.56.1(rw,all_squash,anonuid=1000,anongid=1000,sync,no_subtree_check,insecure)</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>/ws 192.168.56.1(rw,all_squash,anonuid=1000,anongid=1000,sync,no_subtree_check,insecure)
+</code></pre>
 
 <p>Start the NFS server:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo service nfs-kernel-server start</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo service nfs-kernel-server start
+</code></pre>
 
 <p><strong>Update</strong>: if you are using 16.04 use systemctl instead of service, and the service is called nfs-server:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo systemctl start nfs-server</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo systemctl start nfs-server
+</code></pre>
 
 <p>At this point you should be able to mount the NFS directory from your Mac, by going to the Finder Menu Go  -> Connect to Server&hellip; (or using the ⌘k shortcut). On the server address box enter:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>nfs://yourmachine.local/ws</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>nfs://yourmachine.local/ws
+</code></pre>
 
 <p>That should get your Mac access over NFS to the directory  /ws and will have the right permission mapping so that files could be changed either from the Linux or Mac environment without permissions conflicts.</p>
 
@@ -209,37 +184,29 @@
 
 <p>If you are using a proxy, you need to setup it up for the docker daemon on /etc/default/docker:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>export http_proxy=http://your.proxy.com:port
-</span><span class='line'>export https_proxy=http://your.proxy.com:port</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>export http_proxy=http://your.proxy.com:port
+export https_proxy=http://your.proxy.com:port
+</code></pre>
 
 <p>Then, restart your docker to make the changes take effect:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo service docker restart</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo service docker restart
+</code></pre>
 
 <h3>Prepare for  OpenSwitch Build Environment</h3>
 
 <p>Install the minimal required packages for OpenSwitch development:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath screen curl device-tree-compiler git-review</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath screen curl device-tree-compiler git-review
+</code></pre>
 
 <p>OpenSwitch leverages Yocto&rsquo;s shared-state system, so we want to have a global shared state directory that is shared across all the development environments to speed build time. The OpenSwitch build system will get this information automatically from a variable environment, so I will put it on my profile by default:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mkdir /ws/openswitch-sstate-cache /ws/openswitch-downloads
-</span><span class='line'>sudo chown $USER /ws/openswitch-sstate-cache /ws/openswitch-downloads
-</span><span class='line'>echo -e "export SSTATE_DIR=/ws/openswitch-sstate-cache\nexport DL_DIR=/ws/openswitch-downloads" &gt;&gt; ~/.profile
-</span><span class='line'>source ~/.profile</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo mkdir /ws/openswitch-sstate-cache /ws/openswitch-downloads
+sudo chown $USER /ws/openswitch-sstate-cache /ws/openswitch-downloads
+echo -e "export SSTATE_DIR=/ws/openswitch-sstate-cache\nexport DL_DIR=/ws/openswitch-downloads" &gt;&gt; ~/.profile
+source ~/.profile
+</code></pre>
 
 <h2>Git And Gerrit Setup</h2>
 
@@ -247,65 +214,42 @@
 
 <p>First, setup git (I like to use colors, and use st as an alias for status):</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git config --global user.name "John Doe"
-</span><span class='line'>git config --global user.email johndoe@example.com
-</span><span class='line'>git config --global alias.st status
-</span><span class='line'>git config --global color.ui auto</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+git config --global alias.st status
+git config --global color.ui auto
+</code></pre>
 
 <p>If you are working behind a corporate firewall, it may be that gerrit ports (29418) are blocked. You can test a telnet connection into the port to confirm if you are blocked. A workaround this restriction is to install socat and use a proxy for the ssh connection:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install socat
-</span><span class='line'>cat &lt;&lt;EOF &gt;&gt;~/.ssh/config
-</span><span class='line'>Host review.openswitch.net
-</span><span class='line'>    IdentityFile ~/.ssh/id_rsa
-</span><span class='line'>    ProxyCommand socat - PROXY:your.proxy.com:%h:%p,proxyport=&lt;port&gt;
-</span><span class='line'>EOF</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>sudo apt-get install socat
+cat &lt;&lt;EOF &gt;&gt;~/.ssh/config
+Host review.openswitch.net
+    IdentityFile ~/.ssh/id_rsa
+    ProxyCommand socat - PROXY:your.proxy.com:%h:%p,proxyport=&lt;port&gt;
+EOF
+</code></pre>
 
 <p>If your github username is different from the username in your machine, you may want to configure git to use the right username when doing git reviews:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git config --global gitreview.username &lt;username&gt;</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>git config --global gitreview.username &lt;username&gt;
+</code></pre>
 
 <p>You can verify your connection to gerrit works by issuing this command and getting a similar output:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh -p 29418 &lt;username&gt;@review.openswitch.net
-</span><span class='line'>  ****    Welcome to Gerrit Code Review    ****
-</span><span class='line'>
-</span><span class='line'>  Hi John Doe, you have successfully connected over SSH.
-</span><span class='line'>
-</span><span class='line'>  Unfortunately, interactive shells are disabled.
-</span><span class='line'>
-</span><span class='line'>  To clone a hosted Git repository, use:
-</span><span class='line'>
-</span><span class='line'>  git clone ssh://&lt;username&gt;@review.openswitch.net:29418/REPOSITORY_NAME.git
-</span><span class='line'>
-</span><span class='line'>Connection to review.openswitch.net closed.</span></code></pre></td></tr></table></div></figure>
+<pre><code>ssh -p 29418 &lt;username&gt;@review.openswitch.net
+  ****    Welcome to Gerrit Code Review    ****
 
+  Hi John Doe, you have successfully connected over SSH.
+
+  Unfortunately, interactive shells are disabled.
+
+  To clone a hosted Git repository, use:
+
+  git clone ssh://&lt;username&gt;@review.openswitch.net:29418/REPOSITORY_NAME.git
+
+Connection to review.openswitch.net closed.
+</code></pre>
 
 <h2>Building OpenSwitch</h2>
 
@@ -313,15 +257,11 @@
 
 <p>First I clone the build system:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://git.openswitch.net/openswitch/ops-build ops-appliance
-</span><span class='line'>cd ops-appliance
-</span><span class='line'>make configure appliance
-</span><span class='line'>make</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>git clone https://git.openswitch.net/openswitch/ops-build ops-appliance
+cd ops-appliance
+make configure appliance
+make
+</code></pre>
 
 <p>Now you can sit a wait for the build to complete. If you have a fast internet connection it will take in the order of 15 minutes to download all the caches and sources to build a full OpenSwitch Virtual Appliance. In  my next post we will be using that.</p>
 

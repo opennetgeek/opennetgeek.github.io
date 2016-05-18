@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://opennetgeek.github.io/blog/archives/</loc>
+<loc>http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/</loc>
+<lastmod>2016-04-19T14:58:23-06:00</lastmod>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/2016/03/22/starting-a-blog-on-open-software-slash-hardware-plus-networking/</loc>
+<lastmod>2016-03-22T14:51:39-06:00</lastmod>
 </url>
 <url>
 <loc>http://opennetgeek.github.io/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/archives/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/open-hardware/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/open-source/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/openswitch/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/linux/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/mac/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/os-x/</loc>
 </url>
 </urlset>

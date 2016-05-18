@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Os X | The Open Network Geek Blog]]></title>
+  <link href="http://opennetgeek.github.io/blog/categories/os-x/atom.xml" rel="self"/>
+  <link href="http://opennetgeek.github.io/"/>
+  <updated>2016-05-18T16:47:34-06:00</updated>
+  <id>http://opennetgeek.github.io/</id>
+  <author>
+    <name><![CDATA[Diego Dompe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Developing OpenSwitch With Linux VM/OS X Host]]></title>
+    <link href="http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/"/>
+    <updated>2016-04-19T14:58:23-06:00</updated>
+    <id>http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host</id>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/ops-mac.jpg" title="&lsquo;OpenSwitch on Mac&rsquo; &lsquo;OpenSwitch on Mac&rsquo;" ></p>
+
+<p><strong>Note</strong>: This article was <a href="https://opennetgeek.wordpress.com/2016/04/19/developing-openswitch-with-linux-vmos-x-host/">originally published here</a>.</p>
+
+<p>One of the purposes when we designed the build system in OpenSwitch, was to make it possible to develop on as many environments as possible. If you have some background with developing networking firmware, the typical developer love to have this VM where everything works perfectly, but makes it impossible to work in your laptop at 30000 feet. This is not really a sin (as long as you can have the VM hosted in your machine), but the problem is that usually is some IT team on charge of the VMs setup, and the deployment is not handled by some automated/version-controlled code.</p>
+
+<p>So for OpenSwitch, we aimed to at least document the requirements and steps for manual setup of your environment. You can read <a href="http://www.openswitch.net/documents/dev/linux-setup">this page</a> to get your Linux machine to ready it for OpenSwitch development.</p>
+
+<p>So, why to write an article about my particular setup? Well, I&rsquo;m a Mac user, so in this article I&rsquo;m going to detail my setup using a OS X host with a Linux VM. This provides some nice tricks that makes your workflow easier if you are using a similar setup. I will also explain the rationale of the setup.</p>
+
+<p>My use of Linux VM for development is mostly thru the Linux CLI and I use NFS to share files between my Mac and Linux. This allows me to use any graphical tool from the Linux VM if I have to, but also to use tools from the host without major hurdles.Read more&hellip;</p>
+
+<h2>Setup the VM</h2>
+
+<!--more-->
+
+
+<p>The first step is that I will use <a href="https://www.virtualbox.org/">VirtualBox</a> to deploy my Linux VM. You can use any software that you want, but VirtualBox is free and available to any developer, so it&rsquo;s a good target.</p>
+
+<p>Since I&rsquo;m using a Macbook Pro Retina with a i7, I will use the following setup:</p>
+
+<ul>
+<li>6 Cores: the Yocto build system can take advantage of the multicore environment, so the more cores, the faster builds. This leaves 2 cores idle for my Mac, so performance doesn&rsquo;t suffer.</li>
+<li>4Gb of RAM: A full from-scratch build of the compiler (rare, since we use Yocto&rsquo;s shared states) can consume quite a bit of RAM.</li>
+<li>20GB of disk: the build directories from Yocto could be big, averaging 6G each, but the figure could easily go up depending on what you are doing. So having some disk space to spare is a good measure (I personally ran with 160GB)</li>
+<li>Two network interfaces:
+
+<ul>
+<li>First one will be NAT, so that I can reach the internet independent of the network connection on my Mac (sometimes I use wireless, sometimes I use a thunderbolt dock station).</li>
+<li>Second one will be host-only adapter, this provides a internal network so that we can easily communicate between the VM and the host. Using multicast DNS (aka Bonjour), we won' even have to worry about IP addresses on this network.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>For this VM, I will be using <a href="http://mirror.uoregon.edu/ubuntu-releases/14.04.4/ubuntu-14.04.4-server-amd64.iso">Ubuntu LTS 14.04 Server ISO</a>. Right now OpenSwitch works best with this version of Ubuntu (and provides faster build times). We hope to update to the new LTS soon and once we do, I will update this post to reflect that. <strong>Update</strong>: I have added comments about how to make it work with <a href="http://releases.ubuntu.com/16.04/ubuntu-16.04-server-amd64.iso">Ubuntu 16.04</a>!.</p>
+
+<p>I&rsquo;m assuming you are familiar with installing an Ubuntu ISO into a VM and will omit those details. The only important detail from the installation would be to install the SSH server. I would recommend that you setup your user account with the same user id that you have in GitHub (this is a good moment to create one, if you don&rsquo;t). Using the same user account makes life easier with gerrit, but is not an strict requirement.</p>
+
+<h2>Proxy Setup</h2>
+
+<p>If you are behind a corporate firewall, be sure to setup your corporate proxies in your user environment:</p>
+
+<pre><code>cat &lt;&lt;EOF &gt;&gt;~/.profile
+export http_proxy=http://your.proxy.com:port
+export https_proxy=http://your.proxy.com:port
+EOF
+source ~/.profile
+</code></pre>
+
+<p>If my case, I may be roaming between the office and home, so sometimes I don&rsquo;t use a proxy, in which case I find easy to unset the variables and be able to work. So, I don&rsquo;t like to wire the apt configuration with the proxy as <a href="http://askubuntu.com/questions/257290/configure-proxy-for-apt">explained here</a>, instead I like to run the apt-get command with &lsquo;sudo -E&rsquo; parameter so that it inherits my environment variables and uses the proxy if I have it defined.</p>
+
+<h2>Initial Setup</h2>
+
+<p>First, I usually disable asking password for my user:</p>
+
+<pre><code>sudo visudo -f /etc/sudoers.d/passwordless-user
+</code></pre>
+
+<p>Then enter a line like the following (replace your username):</p>
+
+<pre><code>username ALL=(ALL) NOPASSWD:ALL
+</code></pre>
+
+<p>Next, let&rsquo;s update the apt package cache:</p>
+
+<pre><code>sudo apt-get update
+</code></pre>
+
+<h2>Networking Setup</h2>
+
+<p>The initial installation will configure the machine out of the box to have DHCP on the first network interface, so we will need to add the second interface for automatic startup. So I will add the following lines to /etc/network/interfaces:</p>
+
+<pre><code>auto eth1
+iface eth1 inet dhcp
+</code></pre>
+
+<p>Then, bring the interface up:</p>
+
+<pre><code>sudo ifup eth1
+</code></pre>
+
+<p><strong>Update</strong>: if you are using 16.04, the network interfaces have different names (to understand why and revert it if you want, take a look here). Run &lsquo;ifconfig -a&rsquo; to find the name of your interfaces.</p>
+
+<p>Next, proceed to install some extra packages and configurations that make networking work better.</p>
+
+<p>dnsmasq: the build system fetches constantly from the servers in order to use the shared states to speed the build. So using a local DNS cache will help reduce the pressure on your DNS (and may save you from raising flags about the high rate of request your machine will be doing).</p>
+
+<pre><code>sudo apt-get install dnsmasq
+</code></pre>
+
+<p><strong>Update</strong>: if you are using 16.04, dnsmasq won&rsquo;t work out of the box since it conflicts with the dnsmasq used by the LXC container daemon. I worked around by disabling LXC (but maybe that solution doesn&rsquo;t work for you):</p>
+
+<pre><code>sudo systemctl stop lxc lxc-net
+sudo systemctl disable lxc lxc-net
+</code></pre>
+
+<p>nss-mdns: this is the name service resolution to use multicast DNS. This allows the Linux machine to resolve (and as side effect of dependencies, advertise) .local addresses and makes communication with the Mac simpler.</p>
+
+<pre><code>sudo apt-get install libnss-mdns
+</code></pre>
+
+<p>After this is installed, you should be able to reach your machine with the .local name. Lets say your Linux machine is named linuxvm, then you should be able to run from your Mac:</p>
+
+<pre><code>ping linuxvm.local
+</code></pre>
+
+<h2>Headless VM</h2>
+
+<p>After the initial networking setup is ready, I like to run the VM in headless mode from the OS X terminal. To do that, I shutdown the VM from the VirtualBox UI and close the application. Then from an OS X Terminal I can start the VM in the background with (replace the LinuxVM name with the name of your VM:</p>
+
+<pre><code>VBoxHeadless --startvm LinuxVM --vrde off &amp;
+</code></pre>
+
+<p>This will run on the background and as long as you don&rsquo;t close the terminal, the VM will run. Next, I usually connect to the VM from the terminal with (using the mDNS .local resolution):</p>
+
+<pre><code>ssh -Y username@linuxvm.local
+</code></pre>
+
+<p>The -Y automatically exports X11 apps into my Mac XQuartz, in case you want to use some graphical program from Linux.</p>
+
+<h2>OpenSwitch Development Environment Tweaks</h2>
+
+<p>Create a workspace directory on /ws. This is just an standard I follow  of putting all my work on a separate directory. Makes easier to fine-control the NFS exports from my Linux machine into my Mac host.</p>
+
+<pre><code>sudo mkdir /ws
+sudo chown $USER /ws
+</code></pre>
+
+<h3>NFS Server Share Setup</h3>
+
+<p>Installing an NFS server with the proper parameters to allow easy sharing of files between the host an the Mac took me several hours of research. Here is the recipe for it.</p>
+
+<p>Install the NFS server daemon:</p>
+
+<pre><code>sudo apt-get install nfs-kernel-server
+</code></pre>
+
+<p>Configure the /etc/exports file with the following line to allow your Mac host to access the files under /ws with the same user permissions as your Linux user (assuming your user ID is 1000, you can find that with the &lsquo;id&rsquo; command).</p>
+
+<pre><code>/ws 192.168.56.1(rw,all_squash,anonuid=1000,anongid=1000,sync,no_subtree_check,insecure)
+</code></pre>
+
+<p>Start the NFS server:</p>
+
+<pre><code>sudo service nfs-kernel-server start
+</code></pre>
+
+<p><strong>Update</strong>: if you are using 16.04 use systemctl instead of service, and the service is called nfs-server:</p>
+
+<pre><code>sudo systemctl start nfs-server
+</code></pre>
+
+<p>At this point you should be able to mount the NFS directory from your Mac, by going to the Finder Menu Go  -> Connect to Server&hellip; (or using the ⌘k shortcut). On the server address box enter:</p>
+
+<pre><code>nfs://yourmachine.local/ws
+</code></pre>
+
+<p>That should get your Mac access over NFS to the directory  /ws and will have the right permission mapping so that files could be changed either from the Linux or Mac environment without permissions conflicts.</p>
+
+<h3>Install Docker</h3>
+
+<p>We are going to be using docker, so we need to install it following the instructions <a href="https://docs.docker.com/engine/installation/linux/ubuntulinux/">here</a>.</p>
+
+<p>If you are using a proxy, you need to setup it up for the docker daemon on /etc/default/docker:</p>
+
+<pre><code>export http_proxy=http://your.proxy.com:port
+export https_proxy=http://your.proxy.com:port
+</code></pre>
+
+<p>Then, restart your docker to make the changes take effect:</p>
+
+<pre><code>sudo service docker restart
+</code></pre>
+
+<h3>Prepare for  OpenSwitch Build Environment</h3>
+
+<p>Install the minimal required packages for OpenSwitch development:</p>
+
+<pre><code>sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath screen curl device-tree-compiler git-review
+</code></pre>
+
+<p>OpenSwitch leverages Yocto&rsquo;s shared-state system, so we want to have a global shared state directory that is shared across all the development environments to speed build time. The OpenSwitch build system will get this information automatically from a variable environment, so I will put it on my profile by default:</p>
+
+<pre><code>sudo mkdir /ws/openswitch-sstate-cache /ws/openswitch-downloads
+sudo chown $USER /ws/openswitch-sstate-cache /ws/openswitch-downloads
+echo -e "export SSTATE_DIR=/ws/openswitch-sstate-cache\nexport DL_DIR=/ws/openswitch-downloads" &gt;&gt; ~/.profile
+source ~/.profile
+</code></pre>
+
+<h2>Git And Gerrit Setup</h2>
+
+<p>Setup some initial git setup for working with <a href="https://review.openswitch.net/">OpenSwitch Gerrit</a>. You will need a GitHub account in order to login into gerrit, so I will assume you already have one, and you know how to upload your ssh key into gerrit. You will also need to sign a <a href="http://elinux.org/Developer_Certificate_Of_Origin">DCO</a> when signing for Gerrit, otherwise won&rsquo;t be able to upload code for review (if you are going to contribute as part of your job, you need to follow the steps on the OpenSwitch page to get your employer to sing a corporate contribution agreement).</p>
+
+<p>First, setup git (I like to use colors, and use st as an alias for status):</p>
+
+<pre><code>git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+git config --global alias.st status
+git config --global color.ui auto
+</code></pre>
+
+<p>If you are working behind a corporate firewall, it may be that gerrit ports (29418) are blocked. You can test a telnet connection into the port to confirm if you are blocked. A workaround this restriction is to install socat and use a proxy for the ssh connection:</p>
+
+<pre><code>sudo apt-get install socat
+cat &lt;&lt;EOF &gt;&gt;~/.ssh/config
+Host review.openswitch.net
+    IdentityFile ~/.ssh/id_rsa
+    ProxyCommand socat - PROXY:your.proxy.com:%h:%p,proxyport=&lt;port&gt;
+EOF
+</code></pre>
+
+<p>If your github username is different from the username in your machine, you may want to configure git to use the right username when doing git reviews:</p>
+
+<pre><code>git config --global gitreview.username &lt;username&gt;
+</code></pre>
+
+<p>You can verify your connection to gerrit works by issuing this command and getting a similar output:</p>
+
+<pre><code>ssh -p 29418 &lt;username&gt;@review.openswitch.net
+  ****    Welcome to Gerrit Code Review    ****
+
+  Hi John Doe, you have successfully connected over SSH.
+
+  Unfortunately, interactive shells are disabled.
+
+  To clone a hosted Git repository, use:
+
+  git clone ssh://&lt;username&gt;@review.openswitch.net:29418/REPOSITORY_NAME.git
+
+Connection to review.openswitch.net closed.
+</code></pre>
+
+<h2>Building OpenSwitch</h2>
+
+<p>Finally, I&rsquo;m going to clone the OpenSwitch build system, and build an appliance image that I would use in my next post about working OpenSwitch with GNS3.</p>
+
+<p>First I clone the build system:</p>
+
+<pre><code>git clone https://git.openswitch.net/openswitch/ops-build ops-appliance
+cd ops-appliance
+make configure appliance
+make
+</code></pre>
+
+<p>Now you can sit a wait for the build to complete. If you have a fast internet connection it will take in the order of 15 minutes to download all the caches and sources to build a full OpenSwitch Virtual Appliance. In  my next post we will be using that.</p>
+
+<h2>Conclusion</h2>
+
+<p>I hope the information is useful. Drop me a comment if you think there is any improvement I can do to the environment.</p>
+]]></content>
+  </entry>
+  
+</feed>
