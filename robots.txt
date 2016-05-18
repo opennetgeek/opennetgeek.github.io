@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://opennetgeek.github.io/sitemap.xml 

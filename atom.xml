@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[The Open Network Geek Blog]]></title>
+  <link href="http://opennetgeek.github.io/atom.xml" rel="self"/>
+  <link href="http://opennetgeek.github.io/"/>
+  <updated>2016-05-18T14:14:48-06:00</updated>
+  <id>http://opennetgeek.github.io/</id>
+  <author>
+    <name><![CDATA[Diego Dompe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>
