@@ -80,9 +80,7 @@ capabilities of snooping on the traffic of the virtual network.
 On recent OS X, when trying to run the GNS3 application you may get an
 error message:
 
-```
-“GNS3” is damaged and can’t be opened
-```
+    “GNS3” is damaged and can’t be opened
 
 This is a wrong error message, and the problem is really that you need
 to reduce the security of the system to allow executing applications
