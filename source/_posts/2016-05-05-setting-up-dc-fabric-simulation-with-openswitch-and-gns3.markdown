@@ -58,14 +58,12 @@ Let's elaborate on the setup details:
     -   You may optionally configure IP masquerading (aka NAT) on this
         box to allow the OpenSwitch boxes to reach the external world,
         but is not really required.
-        <div class="callout border-callout">
+        <div class="callout bottom-left">
         You may be wondering why not connect the management switch
         directly to the NAT port on the cloud element? I tried this, and
         found the DHCP server shipping in VirtualBox was not really
         good, and sometimes will assign the same IP address to different
         boxes if restarted at a given time (bug with the leases?)
-        <b class="border-notch notch"></b>
-        <b class="notch"></b>
         </div>
     -   We will install Ansible on this box, and use it as control
         machine to configure the fabric
@@ -132,15 +130,13 @@ connections as detailed previously. This image is configured with serial
 port console enabled, so after starting the VM, you can open the console
 from GNS3 and get access. The default user/password is ubuntu/ubuntu.
 
-<div class="callout border-callout">
+<div class="callout bottom-left">
 Be sure to connect this VM to the NAT interface of the cloud element
 first, so that it gets a DHCP response, otherwise it will be blocked
 during the boot process until it times out, and you won't see any output
 on the serial console. If you have doubt your setup is working, you can
 disable the 'headless' setting on the machine and look at the VGA
 console of the box.
-<b class="border-notch notch"></b>
-<b class="notch"></b>
 </div>
 
 ## Setting up the Ubuntu VM
@@ -159,13 +155,11 @@ stty cols 120 rows 35
 
 Next we want to install the latest software updates for this image:
 
-<div class="callout border-callout">
+<div class="callout top-left">
 For the sake of simplicity I assume you are not behind a corporate
 firewall, but if you do, you want to set the http_proxy and
 http_proxy variables, and when invoking sudo, pass the -E parameter
 to inherit these variables.
-<b class="border-notch notch"></b>
-<b class="notch"></b>
 </div>
 
 ```
@@ -267,12 +261,10 @@ switch# show interface mgmt 
 switch#
 ```
 
-<div class="callout border-callout">
+<div class="callout bottom-left">
 Unfortunately OpenSwitch Simulator still has the <a href="https://tree.taiga.io/project/openswitch/issue/840">bug I mentioned
 previously</a> and sometimes it may fail during initialization. If you stumble with this,
 just restart the VM.
-<b class="border-notch notch"></b>
-<b class="notch"></b>
 </div>
 
 You may also test login with user root (no password) into a bash shell
