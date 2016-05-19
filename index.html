@@ -125,7 +125,88 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-04-19T14:58:23-06:00"  data-updated="true" itemprop="datePublished dateCreated">ordinal</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-04-20T18:52:32-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-04-20 18:52:32 -0600</time>
+        
+           | <a href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://opennetgeek.github.io/blog/2016/04/20/using-openswitch-appliance-with-gns3/">Comments</a>
+        
+      </p>
+    
+    
+      <h2 class="entry-title" itemprop="name headline"><a href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/" itemprop="url">Using OpenSwitch Appliance With GNS3</a></h2>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p><img class="center no-border" src="/images/openswitchstencilbig1.png"></p>
+
+<p><strong>Note</strong>: This article was <a href="https://opennetgeek.wordpress.com/2016/04/20/using-openswitch-appliance-with-gns3/">originally published here</a>.</p>
+
+<p><strong>Update:</strong>This post has been updated to account for some recent changes
+in the appliance configuration (support for up to 7 front ports). In
+my <a href="http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/">previous
+post</a> I
+described my developer setup to work with OpenSwitch. At the end of my
+post I showed how to download the build system, and configure and build
+an &lsquo;appliance&rsquo; image.</p>
+
+<h2>What Is An OpenSwitch Appliance?</h2>
+
+<p>The appliance is a virtual machine image (in OVA format) that could be
+run on VirtualBox or VMware (on this articule I will focus on
+VirtualBox) and provides a software datapath (based in OVS right now,
+but P4 support it&rsquo;s landing soon). All the rest of the OpenSwitch stack
+is the same that you will see in a real hardware, and obviously the
+software datapath has certain limitations and features not implemented.</p>
+
+<p>Despite his limitations, the appliance is a really nice way to get your
+hands into OpenSwitch without having real hardware.</p>
+
+<p>If you are using the development environment, you can find the appliance .ova file on the
+images directory after completing the build, but otherwise you can also
+download a periodic image from the <a href="https://archive.openswitch.net/artifacts/periodic/master/latest/appliance/">project
+archives</a> (keep
+in mind this is a developer snapshot, so things may be broken or
+uncomplete sometimes).</p>
+
+<p>The Appliance has currently <del>4</del> <a href="https://review.openswitch.net/#/c/7859/">8</a>
+network ports (this is the max number of interfaces supported by VirtualBox): eth0 to eth7. The
+port &lsquo;eth0&rsquo; will be the management port, and the other ones are &lsquo;front
+ports&rsquo;.</p>
+
+<h2>How To Use The Appliance?</h2>
+
+</div>
+  
+  
+    <footer>
+      <a class="read-more btn btn-default" href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-04-19T14:58:23-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-04-19 14:58:23 -0600</time>
         
            | <a href="/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/#disqus_thread" itemprop="discussionUrl"
              data-disqus-identifier="http://opennetgeek.github.io/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/">Comments</a>
@@ -182,7 +263,7 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-03-22T14:51:39-06:00"  data-updated="true" itemprop="datePublished dateCreated">ordinal</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-03-22T14:51:39-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-03-22 14:51:39 -0600</time>
         
            | <a href="/blog/2016/03/22/starting-a-blog-on-open-software-slash-hardware-plus-networking/#disqus_thread" itemprop="discussionUrl"
              data-disqus-identifier="http://opennetgeek.github.io/blog/2016/03/22/starting-a-blog-on-open-software-slash-hardware-plus-networking/">Comments</a>
@@ -237,7 +318,12 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
       
         <section>
   <h1>About Me</h1>
-  <p>A little something about me.</p>
+  <p>Software Architect/Developer by day. Family men and hacker by night.</p>
+  <p>
+  <a href="https://cr.linkedin.com/pub/diego-dompe/13/454/767" style="text-decoration:none;"><span style="font: 80% Arial,sans-serif; color:#0783B6;"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_in_20x15.png" width="20" height="15" alt="View Diego Dompe's LinkedIn profile" style="vertical-align:middle;" border="0">&nbsp;View Diego Dompe's LinkedIn profile</span></a>
+  </p>
+  <br>
+  <br>
 </section>
 <section class="panel panel-default">
   <div class="panel-heading">
@@ -245,6 +331,8 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
   </div>
   
   <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item " href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/">Using OpenSwitch Appliance With GNS3</a>
     
     <a class="list-group-item " href="/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/">Developing OpenSwitch With Linux VM/OS X Host</a>
     
@@ -273,7 +361,7 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     
     
     <a class="list-group-item " href="/blog/categories/openswitch/index.html">
-        <span class="badge">2</span>
+        <span class="badge">3</span>
         openswitch
       </a>
     
@@ -295,6 +383,18 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
         os x
       </a>
     
+    
+    <a class="list-group-item " href="/blog/categories/appliance/index.html">
+        <span class="badge">1</span>
+        appliance
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/gns3/index.html">
+        <span class="badge">1</span>
+        gns3
+      </a>
+    
   </div>
 </section>
 
@@ -308,7 +408,7 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     </div>
     <footer role="contentinfo"><div class="container">
     <p class="text-muted credits">
-  Copyright &copy; 2016 - Diego Dompe<br>
+  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />Except where otherwise noted, content on this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. <br> 
 </p>
 
 </div>
