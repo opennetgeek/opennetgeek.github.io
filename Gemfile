@@ -16,3 +16,4 @@ group :development do
 end
 
 gem 'sinatra', '~> 1.4.2'
+gem 'font-awesome-sass', '~> 4.6.2'
