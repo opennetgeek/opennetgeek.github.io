@@ -28,6 +28,8 @@ doing all of this are [available as open source](http://p4.org/code/)?
 
 ## What does P4 has to do with OpenSwitch?
 
+<!--more-->
+
 Well, as I mention in previous posts, OpenSwitch provides a simulation
 environment that provides a software data path for testing and training
 purposes, and we package it as either container or VM appliance. So far
