@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Setting Up DC Fabric Simulation With OpenSwitch and GNS3 - The Open Network Geek Blog</title>
+  <meta name="author" content="Diego Dompe">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="The Open Network Geek Blog" type="application/atom+xml">
+
+  <!-- http://opengraphprotocol.org/ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">
+  <meta property="og:title" content="Setting Up DC Fabric Simulation With OpenSwitch and GNS3 - The Open Network Geek Blog">
+  
+
+  <script src="/javascripts/libs/jquery/jquery-2.1.3.min.js"></script>
+
+<link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+
+
+  
+  <link href="/stylesheets/screen.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+
+  
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-77960802-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+
+</head>
+
+  <body   >
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="wrap">
+      <header role="banner">
+        <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" title="toggle navbar" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">The Open Network Geek Blog</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a rel="index" href="/">Blog</a>
+                </li>
+                <li >
+                    <a href="/blog/archives">Archives</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="navbar-form navbar-right" action="https://www.google.com/search" method="GET">
+                    <input type="hidden" name="sitesearch" value="opennetgeek.github.io">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+      </header>
+      <div id="main" role="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content col-md-9" itemscope itemtype="http://schema.org/Blog">
+    <meta itemprop="name" content="The Open Network Geek Blog" />
+    <meta itemprop="description" content="A blog about Open Networking" />
+    <meta itemprop="url" content="http://opennetgeek.github.io" />
+    <article class="hentry" role="article" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-05-05T19:31:32-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-05-05 19:31:32 -0600</time>
+        
+           | <a href="#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://opennetgeek.github.io">Comments</a>
+        
+      </p>
+    
+    
+    <h1 class="entry-title" itemprop="name headline">
+        Setting Up DC Fabric Simulation With OpenSwitch and GNS3
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content clearfix" itemprop="articleBody description"><p><img class="center" src="/images/google-datacenter-tech-03.jpg"></p>
+
+<p><strong>Note</strong>: This article was <a href="https://opennetgeek.wordpress.com/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">originally published here</a>.</p>
+
+<p>In the <a href="http://opennetgeek.github.io/blog/2016/04/20/using-openswitch-appliance-with-gns3/">previous
+post</a> I
+covered the basics about setting up the OpenSwitch Appliance using GNS3.
+The setup was fairly simple: two switches connected to each other and
+exchanging LLDP packets. In this post we will setup a more elaborate
+network to simulate a DC fabric (although it may be a bit <a href="https://kontrolissues.net/2015/03/27/sometimes-size-matters-im-sorry-but-youre-just-not-big-enough/">overkill of a
+setup</a>).
+The setup will be the basis for the next posts about configuring this
+fabric using Ansible.</p>
+
+<p>One of the first questions when setting up a complex topology with GNS3
+that most people will do is: how do I connect
+it to the external world outside of the simulation? For VirtualBox
+machines that we are using, the options are limited. The one I found to
+work reliably across platforms was to use a NAT connection. This has the
+disadvantage that we have limited connectivity from the external world
+toward the internal network, but this could be also a security advantage
+to prevent accidental propagation of control protocols from our
+simulated environment.</p>
+
+<p>Since the purpose of this lab is going to be to play with Ansible, we are
+going to need a Linux machine to run it. So, we will setup the following network:</p>
+
+<p><img class="center no-border" src="/images/mgmt1.png"></p>
+
+<p>Let&rsquo;s elaborate on the setup details:</p>
+
+<!--more-->
+
+
+<ul>
+<li>The &lsquo;Internet&rsquo; cloud is a GNS3&rsquo;s cloud element, that I configured
+with a NAT entry that I named &lsquo;nat&rsquo;. The name doesn&rsquo;t really matter,
+as GNS3 just need to see a NAT interface on the cloud element, so
+that the connection to the VM called &lsquo;ubuntu-netlab&rsquo; is configured
+using VirtualBox&rsquo;s NAT networking.</li>
+<li>The &lsquo;ubuntu-netlab&rsquo; is a virtual machine that have Ubuntu 16.04
+Server installed on it (instructions about this setup below). This
+VM will have two NICs: one attached to the NAT connection
+and another one to the SW1 that will be the management network of
+the switches. What we will be doing with this machine? Several
+things:
+
+<ul>
+<li>Run a DHCP server to provide IP connectivity to the management
+network</li>
+<li>Run a DNS relay to minimize disruptions on the configuration (I
+may be roaming between home/office).</li>
+<li>You may optionally configure IP masquerading (aka NAT) on this
+box to allow the OpenSwitch boxes to reach the external world,
+but is not really required.
+<div class="callout border-callout">
+You may be wondering why not connect the management switch
+directly to the NAT port on the cloud element? I tried this, and
+found the DHCP server shipping in VirtualBox was not really
+good, and sometimes will assign the same IP address to different
+boxes if restarted at a given time (bug with the leases?)
+<b class="border-notch notch"></b>
+<b class="notch"></b>
+</div></li>
+<li>We will install Ansible on this box, and use it as control
+machine to configure the fabric</li>
+</ul>
+</li>
+<li>The SW1 is a GNS3' ethernet switch with 8 ports. One will be
+connected to the Ubuntu VM, and the other ports to each of the
+management ports of the OpenSwitch boxes.</li>
+<li>We will use 5 OpenSwitch boxes to create a simple datacenter fabric.
+I&rsquo;m calling them spines/leaves for convenience, but I will do
+examples with plain L2, and other L3 topologies that may not be a
+CLOS.</li>
+</ul>
+
+
+<p>So, let&rsquo;s get started with the setup!</p>
+
+<h2>Setup the Management Network</h2>
+
+<p>You should start by dragging a cloud element and configuring it to have
+a network interface of type NAT:</p>
+
+<p><img class="center no-border" src="/images/cloud_nat.png"></p>
+
+<p>Now we need to create the template for the Ubuntu VM that we will
+connect to it.</p>
+
+<h2>Configuring the GNS3 Template for the Ubuntu VM</h2>
+
+<p>As I mention, we will be using an Ubuntu 16.04 (state of the art!)
+Server VM. Don&rsquo;t worry, you won&rsquo;t have to install it. I have pre-package
+it into a nice OVA (sorry tested only with VirtualBox, you may need to
+do some work if want to use VMware). Download it from
+<a href="https://archive.openswitch.net/demos/ubuntu-netlab.ova">here</a>.</p>
+
+<h3>Importing the Image</h3>
+
+<p>After downloading the OVA file, import it into VirtualBox, and then
+proceed to create a template in GNS3 for the machine like we <a href="http://opennetgeek.github.io/blog/2016/04/20/using-openswitch-appliance-with-gns3/#install_and_configure">did for
+OpenSwitch in the previous
+post</a>.
+Here is the summary of the steps and configuration:</p>
+
+<ul>
+<li>Preferences -> VirtualBox VMs -> New
+
+<ul>
+<li>Select the machine you just imported</li>
+<li>☑︎ Use as linked base VM</li>
+</ul>
+</li>
+<li>After created click on &lsquo;Edit&rsquo;
+
+<ul>
+<li>&lsquo;General settings&rsquo; tab:
+
+<ul>
+<li>Template Name: <em>ubuntu-netlab</em></li>
+<li>Default name format: <em>{name}-{0}</em></li>
+<li>Symbol: <em>:/symbols/vbox_guest.svg</em></li>
+<li>Category: <em>End devices</em></li>
+<li>RAM: <em>512 MB</em></li>
+<li>☑︎ Enable remote console</li>
+<li>☐ Enable ACPI shutdown</li>
+<li>☑︎ Start VM in headless mode</li>
+<li>☑︎ Use as a linked base VM</li>
+</ul>
+</li>
+<li>&lsquo;Network&rsquo; tab:
+
+<ul>
+<li>Adapters: <em>2</em></li>
+<li>First port name: <em>leave empty</em></li>
+<li>Name format: <em>eth{0}</em></li>
+<li>Segment size: 0</li>
+<li>Type: <em>PCNet-FAST III (Am79c973)</em></li>
+<li>☑︎ Allow GNS3 to use any configured VirtualBox adapter</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Now you can drag an instance of it into your project and setup the
+connections as detailed previously. This image is configured with serial
+port console enabled, so after starting the VM, you can open the console
+from GNS3 and get access. The default user/password is ubuntu/ubuntu.</p>
+
+<div class="callout border-callout">
+Be sure to connect this VM to the NAT interface of the cloud element
+first, so that it gets a DHCP response, otherwise it will be blocked
+during the boot process until it times out, and you won't see any output
+on the serial console. If you have doubt your setup is working, you can
+disable the 'headless' setting on the machine and look at the VGA
+console of the box.
+<b class="border-notch notch"></b>
+<b class="notch"></b>
+</div>
+
+
+<h2>Setting up the Ubuntu VM</h2>
+
+<h3>Initial Setup</h3>
+
+<p>Now that you have access to the console, let&rsquo;s do some initial setup.
+First you may want to tell the serial terminal the size so that the
+output is not messed up. In my case I just sized my console window to
+120 columns and 35 lines (I use the OS X Terminal app, and the tittle
+usually says the dimensions):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>stty cols 120 rows 35</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next we want to install the latest software updates for this image:</p>
+
+<div class="callout border-callout">
+For the sake of simplicity I assume you are not behind a corporate
+firewall, but if you do, you want to set the http_proxy and
+http_proxy variables, and when invoking sudo, pass the -E parameter
+to inherit these variables.
+<b class="border-notch notch"></b>
+<b class="notch"></b>
+</div>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt update
+</span><span class='line'>sudo apt upgrade</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Network Setup</h3>
+
+<p>Next, we want to configure the second network interface facing towards
+SW1. You will have to run the ifconfig command to find the name of the
+second interface:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ifconfig -a</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On this case my second interface is called enp0s8. I will then configure
+the interface to an static IP address and bring the interface up:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo su -
+</span><span class='line'>cat &lt;&lt;EOF &gt;&gt;/etc/network/interfaces
+</span><span class='line'>
+</span><span class='line'>auto enp0s8
+</span><span class='line'>iface enp0s8 inet static
+</span><span class='line'>   address 192.168.1.1
+</span><span class='line'>   netmask 255.255.255.0
+</span><span class='line'>
+</span><span class='line'>EOF
+</span><span class='line'>exit #leave sudo
+</span><span class='line'>
+</span><span class='line'>sudo ifup enp0s8</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DHCP Server and DNS Relay</h3>
+
+<p>Next we want to install the DHPC server and DNS relay (DNSmasq)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt install isc-dhcp-server dnsmasq</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then proceed to configure the dhcp server modifying the file
+<em>/etc/dhcp/dhcpd.conf</em> with your favorite editor (if you are not a <em>vim</em>
+expert, the <em>nano</em> text editor could be easier). This are the contents
+you will need:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>option domain-name "dc-lab";
+</span><span class='line'>option domain-name-servers 192.168.1.1;
+</span><span class='line'>subnet 192.168.1.0 netmask 255.255.255.0 {
+</span><span class='line'>  range 192.168.1.10 192.168.1.50;
+</span><span class='line'>  option routers 192.168.1.1;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now you can start the server:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>systemctl start isc-dhcp-server</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>IP Masquerading (NAT)</h3>
+
+<p>If you want the OpenSwitch boxes to have access to the external
+network over the management port, you may want to enable IP masquerading
+on the box. Adjust the following script to the name of your network
+interfaces:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public_if=enp0s3
+</span><span class='line'>private_if=enp0s8
+</span><span class='line'>sudo -E iptables -t nat -A POSTROUTING -o $public_if -j MASQUERADE
+</span><span class='line'>sudo -E iptables -A FORWARD -i $public_if -o $private_if -m state --state RELATED,ESTABLISHED -j ACCEPT
+</span><span class='line'>sudo -E iptables -A FORWARD -i $private_if -o $public_if -j ACCEPT
+</span><span class='line'>sudo sysctl -w net.ipv4.ip_forward=1</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Setting up the Fabric Switches</h2>
+
+<p>Now that we have the Cloud element and the Ubuntu VM, you need to drag
+the GNS3 ethernet switch element to connect the second interface from
+the Ubuntu VM with it, along with all the management ports of the
+OpenSwitch instances. You can now proceed to power up the OpenSwitch
+instances and login into their consoles (user/password is netop), and
+verify the management interface got an IP address from our control VM:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>switch# show interface mgmt 
+</span><span class='line'>  Address Mode : dhcp
+</span><span class='line'>  IPv4 address/subnet-mask : 192.168.1.11/24
+</span><span class='line'>  Default gateway IPv4 : 192.168.1.1
+</span><span class='line'>  IPv6 address/prefix : 
+</span><span class='line'>  IPv6 link local address/prefix: fe80::a00:27ff:fe3a:efdd/64
+</span><span class='line'>  Default gateway IPv6 : 
+</span><span class='line'>  Primary Nameserver : 192.168.1.1
+</span><span class='line'>  Secondary Nameserver : 
+</span><span class='line'>switch#</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<div class="callout border-callout">
+Unfortunately OpenSwitch Simulator still has the <a href="https://tree.taiga.io/project/openswitch/issue/840">bug I mentioned
+previously</a> and sometimes it may fail during initialization. If you stumble with this,
+just restart the VM.
+<b class="border-notch notch"></b>
+<b class="notch"></b>
+</div>
+
+
+<p>You may also test login with user root (no password) into a bash shell
+and the networking of the management domain should be able to reach the
+external network.</p>
+
+<h2>Next Steps</h2>
+
+<p>Now that we have a management network up an running, we want to
+configure the fabric to move packets around. At this point most
+networking engineers will log into the CLI and start configuring, but we
+went thru all this setup of a management network to do something more
+interesting&hellip;</p>
+
+<p>In our next post we will do this instead using Ansible,
+which is a pretty good tool for managing
+<a href="http://www.theregister.co.uk/2013/03/18/servers_pets_or_cattle_cern/">cattle</a>.</p>
+</div>
+
+
+      <footer>
+        <p class="meta text-muted">
+          
+  
+
+<span class="glyphicon glyphicon-user"></span> <span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person">Posted by <span class="fn" itemprop="name">Diego Dompe</span></span>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-05-05T19:31:32-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-05-05 19:31:32 -0600</time>
+          
+
+<span class="glyphicon glyphicon-tags"></span>&nbsp;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/appliance/'>appliance</a>, <a class='category' href='/blog/categories/gns3/'>gns3</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/openswitch/'>openswitch</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/" data-via="ddompe" data-counturl="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/" title="Previous Post: Using OpenSwitch Appliance With GNS3">&laquo; Using OpenSwitch Appliance With GNS3</a></li>
+            
+            
+          </ul>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h2>Comments</h2>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+
+  
+  <aside class="sidebar col-md-3">
+    
+      <section>
+  <h1>About Me</h1>
+  <p>Software Architect/Developer by day. Family men and hacker by night.</p>
+  <p>
+  <a href="https://cr.linkedin.com/pub/diego-dompe/13/454/767" style="text-decoration:none;"><span style="font: 80% Arial,sans-serif; color:#0783B6;"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_in_20x15.png" width="20" height="15" alt="View Diego Dompe's LinkedIn profile" style="vertical-align:middle;" border="0">&nbsp;View Diego Dompe's LinkedIn profile</span></a>
+  </p>
+  <br>
+  <p>
+  Disclaimer: Opinions are my own and not the views of my employer.
+  </p>
+  <br>
+</section>
+<section class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Recent Posts</h3>
+  </div>
+  
+  <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item active" href="/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">Setting Up DC Fabric Simulation With OpenSwitch and GNS3</a>
+    
+    <a class="list-group-item " href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/">Using OpenSwitch Appliance With GNS3</a>
+    
+    <a class="list-group-item " href="/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/">Developing OpenSwitch With Linux VM/OS X Host</a>
+    
+    <a class="list-group-item " href="/blog/2016/03/22/starting-a-blog-on-open-software-slash-hardware-plus-networking/">Starting a Blog on Open Software/Hardware + Networking</a>
+    
+  </div>
+</section>
+<section class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Categories</h3>
+  </div>
+  <div class="list-group">
+	
+    
+    
+    <a class="list-group-item " href="/blog/categories/open-hardware/index.html">
+        <span class="badge">1</span>
+        open hardware
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/open-source/index.html">
+        <span class="badge">1</span>
+        open source
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/openswitch/index.html">
+        <span class="badge">4</span>
+        openswitch
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/linux/index.html">
+        <span class="badge">2</span>
+        linux
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/mac/index.html">
+        <span class="badge">1</span>
+        mac
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/os-x/index.html">
+        <span class="badge">1</span>
+        os x
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/appliance/index.html">
+        <span class="badge">2</span>
+        appliance
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/gns3/index.html">
+        <span class="badge">2</span>
+        gns3
+      </a>
+    
+  </div>
+</section>
+
+    
+  </aside>
+  
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />Except where otherwise noted, content on this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. <br> 
+</p>
+
+</div>
+</footer>
+    
+
+<script type="text/javascript">
+      var disqus_shortname = 'opennetgeek';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/';
+        var disqus_url = 'http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+<script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr.js"></script>
+
+
+  </body>
+</html>

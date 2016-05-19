@@ -125,6 +125,80 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-05-05T19:31:32-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-05-05 19:31:32 -0600</time>
+        
+           | <a href="/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">Comments</a>
+        
+      </p>
+    
+    
+      <h2 class="entry-title" itemprop="name headline"><a href="/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/" itemprop="url">Setting Up DC Fabric Simulation With OpenSwitch and GNS3</a></h2>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p><img class="center" src="/images/google-datacenter-tech-03.jpg"></p>
+
+<p><strong>Note</strong>: This article was <a href="https://opennetgeek.wordpress.com/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">originally published here</a>.</p>
+
+<p>In the <a href="http://opennetgeek.github.io/blog/2016/04/20/using-openswitch-appliance-with-gns3/">previous
+post</a> I
+covered the basics about setting up the OpenSwitch Appliance using GNS3.
+The setup was fairly simple: two switches connected to each other and
+exchanging LLDP packets. In this post we will setup a more elaborate
+network to simulate a DC fabric (although it may be a bit <a href="https://kontrolissues.net/2015/03/27/sometimes-size-matters-im-sorry-but-youre-just-not-big-enough/">overkill of a
+setup</a>).
+The setup will be the basis for the next posts about configuring this
+fabric using Ansible.</p>
+
+<p>One of the first questions when setting up a complex topology with GNS3
+that most people will do is: how do I connect
+it to the external world outside of the simulation? For VirtualBox
+machines that we are using, the options are limited. The one I found to
+work reliably across platforms was to use a NAT connection. This has the
+disadvantage that we have limited connectivity from the external world
+toward the internal network, but this could be also a security advantage
+to prevent accidental propagation of control protocols from our
+simulated environment.</p>
+
+<p>Since the purpose of this lab is going to be to play with Ansible, we are
+going to need a Linux machine to run it. So, we will setup the following network:</p>
+
+<p><img class="center no-border" src="/images/mgmt1.png"></p>
+
+<p>Let&rsquo;s elaborate on the setup details:</p>
+
+</div>
+  
+  
+    <footer>
+      <a class="read-more btn btn-default" href="/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-04-20T18:52:32-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-04-20 18:52:32 -0600</time>
         
            | <a href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/#disqus_thread" itemprop="discussionUrl"
@@ -323,6 +397,9 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
   <a href="https://cr.linkedin.com/pub/diego-dompe/13/454/767" style="text-decoration:none;"><span style="font: 80% Arial,sans-serif; color:#0783B6;"><img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_in_20x15.png" width="20" height="15" alt="View Diego Dompe's LinkedIn profile" style="vertical-align:middle;" border="0">&nbsp;View Diego Dompe's LinkedIn profile</span></a>
   </p>
   <br>
+  <p>
+  Disclaimer: Opinions are my own and not the views of my employer.
+  </p>
   <br>
 </section>
 <section class="panel panel-default">
@@ -331,6 +408,8 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
   </div>
   
   <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item " href="/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">Setting Up DC Fabric Simulation With OpenSwitch and GNS3</a>
     
     <a class="list-group-item " href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/">Using OpenSwitch Appliance With GNS3</a>
     
@@ -361,13 +440,13 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     
     
     <a class="list-group-item " href="/blog/categories/openswitch/index.html">
-        <span class="badge">3</span>
+        <span class="badge">4</span>
         openswitch
       </a>
     
     
     <a class="list-group-item " href="/blog/categories/linux/index.html">
-        <span class="badge">1</span>
+        <span class="badge">2</span>
         linux
       </a>
     
@@ -385,13 +464,13 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     
     
     <a class="list-group-item " href="/blog/categories/appliance/index.html">
-        <span class="badge">1</span>
+        <span class="badge">2</span>
         appliance
       </a>
     
     
     <a class="list-group-item " href="/blog/categories/gns3/index.html">
-        <span class="badge">1</span>
+        <span class="badge">2</span>
         gns3
       </a>
     
