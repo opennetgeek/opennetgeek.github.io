@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://opennetgeek.github.io/blog/2016/05/18/openswitch-meets-p4/</loc>
+<lastmod>2016-05-18T21:02:01-06:00</lastmod>
+</url>
+<url>
 <loc>http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/</loc>
 <lastmod>2016-05-05T19:31:32-06:00</lastmod>
 </url>
@@ -45,5 +49,17 @@
 </url>
 <url>
 <loc>http://opennetgeek.github.io/blog/categories/gns3/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/barefoot/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/mellanox/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/p4/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/sdn/</loc>
 </url>
 </urlset>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Barefoot | The Open Network Geek Blog]]></title>
+  <link href="http://opennetgeek.github.io/blog/categories/barefoot/atom.xml" rel="self"/>
+  <link href="http://opennetgeek.github.io/"/>
+  <updated>2016-05-19T10:13:30-06:00</updated>
+  <id>http://opennetgeek.github.io/</id>
+  <author>
+    <name><![CDATA[Diego Dompe]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[OpenSwitch Meets P4]]></title>
+    <link href="http://opennetgeek.github.io/blog/2016/05/18/openswitch-meets-p4/"/>
+    <updated>2016-05-18T21:02:01-06:00</updated>
+    <id>http://opennetgeek.github.io/blog/2016/05/18/openswitch-meets-p4</id>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/ops-p4-sticker.png"></p>
+
+<p><strong>Note</strong>: This article was <a href="https://opennetgeek.wordpress.com/2016/05/09/openswitch-meets-p4/">originally published here</a>.</p>
+
+<p>Before moving on the next post to continue our saga of OpenSwitch
+<a href="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">Simulations with
+GNS3</a>,
+I wanted to take a quick deviation to document a subject that gets a lot
+of attention these days: <a href="http://p4.org">P4</a>.</p>
+
+<p>In case you have been missing all the action around P4, the 30,000 feet view is that it&rsquo;s a
+language to describe forwarding pipelines (and no, it&rsquo;s not the same as
+OpenFlow, that is useful for programming entries in
+almost-always-pre-defined pipelines). One of the
+(<a href="http://events.linuxfoundation.org/sites/events/files/slides/4-%20Chang.pdf">many</a>)
+nice things about this is that you can potentially &lsquo;compile&rsquo; your
+pipeline definition into an executable program that provides a
+functional simulation of a P4-based ASIC. Did I mention the tools for
+doing all of this are <a href="http://p4.org/code/">available as open source</a>?</p>
+
+<h2>What does P4 has to do with OpenSwitch?</h2>
+
+<p>Well, as I mention in previous posts, OpenSwitch provides a simulation
+environment that provides a software data path for testing and training
+purposes, and we package it as either container or VM appliance. So far
+the default software data path is provided by running an stock
+OpenVSwitch that&rsquo;s under control of the switchd plugin for simulation.</p>
+
+<p>However, since Barefoot Networks is a contributing member to the
+OpenSwitch project, they have been adding support for using a P4 backend
+that allows replace the simulation &lsquo;ASIC&rsquo; to a P4 functional model of an
+ASIC. Some details about it can be found in their <a href="https://archive.openswitch.net/presentations/Meetups/March_2016/OPS_Meetup_March2016_BFN_P4.pdf">presentation from the
+last OpenSwitch
+Meetup</a> (if
+you are interested on OpenSwitch, there were several interesting
+presentations on that Meetup. You can watch them
+<a href="https://www.youtube.com/watch?v=u-eWetiNieU">here</a>).</p>
+
+<p>Since OpenSwitch is not married to a particular interface for the ASIC SDK (reports
+otherwise are greatly exaggerated!), the P4 backend provides a <a href="http://git.openswitch.net/cgit/openswitch/ops-switchd-p4switch-plugin/">native
+plugin for
+switchd</a>
+to use their &lsquo;PD&rsquo; APIs directly.</p>
+
+<div class="callout bottom-left">
+Exercise to the reader: Barefoot is a big supporter of 
+<a href="https://github.com/opencomputeproject/SAI">SAI</a> and they can generate
+the SAI shim as well, so it would be interesting to use it with the 
+<a href="http://git.openswitch.net/cgit/openswitch/ops-switchd-sai-plugin/">SAI plugin</a>
+that Mellanox is contributing to OpenSwitch.
+</div>
+
+
+<h2>Shut Up and Take my Bitcoin!</h2>
+
+<p>OK, OK, how to run with the P4 data path? OpenSwitch still doesn&rsquo;t
+provide P4 periodic images, so you have to build the code yourself.
+These are the steps you need to do to flip into the P4 backend (assuming
+you already have a working build environment for either container or
+appliance):</p>
+
+<pre><code>rm -Rf build/tmp # Flush file system dependencies
+echo "EXTRA_IMAGE_FEATURES += \"ops-p4\"" &gt;&gt; build/conf/local.conf
+</code></pre>
+
+<p>Now, run &lsquo;make&rsquo; and go for a coffee while the image get&rsquo;s build. It
+wasn&rsquo;t that hard, was it?</p>
+
+<p>One more thing™, if you are using the
+appliance environment, verify your code already includes <a href="https://review.openswitch.net/#/c/8590/">this
+commit</a>, or otherwise
+cherry-pick the change.</p>
+
+<div class="callout bottom-left">
+<i class="fa fa-2x fa-exclamation-triangle" aria-hidden="true"></i><br><br>
+Buyer beware: P4 is an experimental feature, so don't expect everything
+to be smooth right now ;). That said, the plan for OpenSwitch moving
+forward is to deprecated the OpenVSwitch backend in favor of the P4
+implementation as the default implementation for simulations.
+</div>
+
+
+<h2>How to use the P4-based Image?</h2>
+
+<p>Pretty much the same way that you use the regular simulator image. If
+you are using the P4 Image with GNS3, you can download this special
+edition
+<a href="https://archive.openswitch.net/logo/OpenSwitchP4Stencil.png">stencil</a> I
+did for it.</p>
+
+<p>One interesting fact that you may notice when using the P4
+simulator, is that control packets into the CPU have higher latency.
+This is caused because the PDUs are going thru a TAP device from the
+switch process (in userspace) into the netdev interfaces in the SW
+namespace.</p>
+
+<h2>Final thoughts</h2>
+
+<p>This kind of experimentation wasn&rsquo;t possible a couple years ago, and
+software stacks like SAI and P4 are changing the landscape along with
+OpenSwitch. Think that you can change the forwarding data path
+implementation, rebuild the simulator, and integrate back again with
+your NOS stack! is mind boggling.</p>
+
+<p>So, indeed, &lsquo;software is eating the world&rsquo;. Happy hacking!</p>
+]]></content>
+  </entry>
+  
+</feed>
