@@ -4,7 +4,7 @@
   <title><![CDATA[Category: P4 | The Open Network Geek Blog]]></title>
   <link href="http://opennetgeek.github.io/blog/categories/p4/atom.xml" rel="self"/>
   <link href="http://opennetgeek.github.io/"/>
-  <updated>2016-05-19T10:16:27-06:00</updated>
+  <updated>2016-05-19T10:17:37-06:00</updated>
   <id>http://opennetgeek.github.io/</id>
   <author>
     <name><![CDATA[Diego Dompe]]></name>
@@ -39,6 +39,9 @@ functional simulation of a P4-based ASIC. Did I mention the tools for
 doing all of this are <a href="http://p4.org/code/">available as open source</a>?</p>
 
 <h2>What does P4 has to do with OpenSwitch?</h2>
+
+<!--more-->
+
 
 <p>Well, as I mention in previous posts, OpenSwitch provides a simulation
 environment that provides a software data path for testing and training
