@@ -1,6 +1,4 @@
 /* from whiterspace */
-$callout-bg: #dfdfdf;
-
 article {
   img, video, .flash-video {
     @extend .flex-content;
@@ -14,8 +12,8 @@ article {
     position: relative;
     margin: 18px 0;
     padding: 18px 20px;
-    background-color: $callout-bg;
-    background-image: -moz-linear-gradient(top, $callout-bg, $callout-bg);
+    background-color: #dfdfdf;
+    background-image: -moz-linear-gradient(top, #dfdfdf, #dfdfdf);
     /* easy rounded corners for modern browsers */
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
@@ -33,54 +31,51 @@ article {
   .callout.top::before {
   	left: 45%;
   	bottom: -22px;
-  	border-top: 10px solid $callout-bg;
+  	border-top: 10px solid #dfdfdf;
   }
 
   .callout.bottom::before {
   	left: 45%;
   	top: -22px;
-  	border-bottom: 10px solid $callout-bg;
+  	border-bottom: 10px solid #dfdfdf;
   }
 
   .callout.left::before {
   	right: -22px;
   	top: 40%;
-  	border-left: 10px solid $callout-bg;
+  	border-left: 10px solid #dfdfdf;
   }
 
   .callout.right::before {
   	left: -22px;
   	top: 40%;
-  	border-right: 10px solid $callout-bg;
+  	border-right: 10px solid #dfdfdf;
   }
 
   .callout.top-left::before {
   	left: 7px;
   	bottom: -22px;
-  	border-top: 10px solid $callout-bg;
+  	border-top: 10px solid #dfdfdf;
   }
 
   .callout.top-right::before {
   	right: 7px;
   	bottom: -22px;
-  	border-top: 10px solid $callout-bg;
+  	border-top: 10px solid #dfdfdf;
   }
 
   .callout.bottom-left::before {
     left: 7px;
     top: -22px;
-    border-bottom: 10px solid $callout-bg;
+    border-bottom: 10px solid #dfdfdf;
   }
 
   .callout.bottom-right::before {
     right: 7px;
     top: -22px;
-    border-bottom: 10px solid $callout-bg;
+    border-bottom: 10px solid #dfdfdf;
   }
 
-  .img-right-callout {
-      float: right;
-  }
 
   video, .flash-video { margin: 0 auto 1.5em; }
   video { display: block; width: 100%; }
