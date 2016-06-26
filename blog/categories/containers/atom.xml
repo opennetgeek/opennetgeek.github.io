@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Containers | The Open Network Geek Blog]]></title>
   <link href="http://opennetgeek.github.io/blog/categories/containers/atom.xml" rel="self"/>
   <link href="http://opennetgeek.github.io/"/>
-  <updated>2016-06-26T02:56:11-06:00</updated>
+  <updated>2016-06-26T02:57:22-06:00</updated>
   <id>http://opennetgeek.github.io/</id>
   <author>
     <name><![CDATA[Diego Dompe]]></name>
@@ -201,7 +201,7 @@ customized image to import it into GNS3.</p>
 <h1>Creating a topology for Ansible experimentation</h1>
 
 <p>Now, let&rsquo;s create a topology for creating a DC Fabric simulation with Ansible similar
-to the one described in the <a href="http://aleph1linux.local:4000/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">previous article using virtual machine appliances</a>.</p>
+to the one described in the <a href="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">previous article using virtual machine appliances</a>.</p>
 
 <p>I have created a docker container that already automated all the steps detailed in
 the previous article, and is suitable to be run as a systemd container. The Dockerfile
