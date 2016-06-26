@@ -706,7 +706,8 @@
     t.async = true;
     t.id    = 'gauges-tracker';
     t.setAttribute('data-site-id', '57753c15c88d9070af041dc7');
-    t.src = '//secure.gaug.es/track.js';
+    t.setAttribute('data-track-path', 'https://track.gaug.es/track.gif');
+    t.src = 'https://d36ee2fcip1434.cloudfront.net/track.js';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(t, s);
   })();
