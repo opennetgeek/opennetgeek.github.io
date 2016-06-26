@@ -97,5 +97,8 @@ disqus_show_comment_count: true
 # Google Analytics
 google_analytics_tracking_id: UA-77960802-1
 
+# Gaug.es Analytics
+gauges_analytics_tracking_id: 57753c15c88d9070af041dc7
+
 # Facebook Like
 facebook_like: true
