@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://opennetgeek.github.io/blog/2016/06/25/openswitch-containers-gns3/</loc>
+<lastmod>2016-06-25T23:09:46-06:00</lastmod>
+</url>
+<url>
 <loc>http://opennetgeek.github.io/blog/2016/05/18/openswitch-meets-p4/</loc>
 <lastmod>2016-05-18T21:02:01-06:00</lastmod>
 </url>
@@ -61,5 +65,8 @@
 </url>
 <url>
 <loc>http://opennetgeek.github.io/blog/categories/sdn/</loc>
+</url>
+<url>
+<loc>http://opennetgeek.github.io/blog/categories/containers/</loc>
 </url>
 </urlset>

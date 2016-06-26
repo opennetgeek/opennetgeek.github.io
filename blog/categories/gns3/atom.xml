@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Gns3 | The Open Network Geek Blog]]></title>
   <link href="http://opennetgeek.github.io/blog/categories/gns3/atom.xml" rel="self"/>
   <link href="http://opennetgeek.github.io/"/>
-  <updated>2016-05-19T10:17:37-06:00</updated>
+  <updated>2016-06-26T02:56:11-06:00</updated>
   <id>http://opennetgeek.github.io/</id>
   <author>
     <name><![CDATA[Diego Dompe]]></name>
@@ -12,6 +12,249 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[OpenSwitch Containers ♥ GNS3]]></title>
+    <link href="http://opennetgeek.github.io/blog/2016/06/25/openswitch-containers-gns3/"/>
+    <updated>2016-06-25T23:09:46-06:00</updated>
+    <id>http://opennetgeek.github.io/blog/2016/06/25/openswitch-containers-gns3</id>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/OpenSwitchDocker.png" title="&lsquo;OpenSwitchDocker&rsquo; &lsquo;OpenSwitchDocker&rsquo;" ></p>
+
+<p><div class="toc"/></p>
+
+<p>In one of my <a href="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">previous articles</a>,
+I elaborated on a setup to create DC fabric simulations with GNS3 and OpenSwitch.
+I also promised to follow up with some post about using Ansible with it.</p>
+
+<p>Well, I have been a bit distracted with some changes to the setup before moving into
+the Ansible details (to say true, I got the Ansible article almost ready, but things
+are moving so fast, that I keep rewriting it).</p>
+
+<p>One of the things that &lsquo;change everything&rsquo; recently was the
+<a href="https://www.gns3.com/news/article/what-s-new-in-gns3-v1-5">release of GNS3 1.5</a>.
+This is a great release that includes several features that makes using OpenSwitch with GNS3 awesome:</p>
+
+<ul>
+<li>Support for Docker containers! This enables OpenSwitch to be a container instead of
+a VM, allowing to scale better:
+
+<ul>
+<li>This obviously consumes less RAM memory and use it more efficiently.</li>
+<li>We are no longer limited to 8 ports per node (VirtualBox&rsquo;s restriction), but
+instead we can have as many ports as you want. Even more, the OpenSwitch Appliance
+container will change the number of ports available, based on the GNS3 configuration.</li>
+</ul>
+</li>
+<li>Support for portable projects! Now you can export your project and shared it
+with others (restrictions apply).</li>
+</ul>
+
+
+<p>Let&rsquo;s see how to use this new release with OpenSwitch Appliance Container.</p>
+
+<p><!--more--></p>
+
+<h1>Using the GNS3 VM</h1>
+
+<p>The first recommendation when using the container setup for GNS3, is to use the
+GNS3 VM (even when using a native Linux host). Why?</p>
+
+<ul>
+<li>Well, for running containers on Linux or Windows, you need the GNS3 VM.
+<div class="callout bottom-left">
+Yeah, even if you have docker for Linux/Windows, GNS3 can create the virtual interfaces
+for them on these platforms.
+</div></li>
+<li>Right now the only way to create a portable way to connect to the external world is to
+use the <a href="https://www.gns3.com/marketplace/appliance/internet-for-gns3vm">GNS3 Internet VM Appliance</a>,
+and this only works inside the GNS3 VM.</li>
+<li>With GNS3 1.5, you can setup a remote GNS3 VM machine, allowing to deploy
+a powerful VM for running your simulations without starving your laptop.</li>
+<li>Also with the GNS3 VM, there is a simplified process for setting up a proxy when
+working in a corporate environment.</li>
+</ul>
+
+
+<p>Since we will be using qemu appliances inside the GNS3 VM, you need a virtualization
+platform that supports nested virtualization. That means you are either using a
+VMware desktop solution (Workstation, Player or Fusion), or if using ESXi, be sure
+to <a href="http://www.virtuallyghetto.com/2012/08/how-to-enable-nested-esxi-other.html">enable the VHV flag</a>.</p>
+
+<h2>Installing the GNS3 VM</h2>
+
+<p>Download the VM <a href="https://github.com/GNS3/gns3-gui/releases">from here</a>. Be sure to download the
+right image for either desktop solution or ESXi.</p>
+
+<p>You will need at least version 1.5.0, but if you are behind a corporate firewall, you will need version
+1.5.1 that <a href="https://github.com/GNS3/gns3-vm/issues/75">fixes a bug when configuring the proxy settings</a>.</p>
+
+<p>After downloading the GNS3 VM appliance, import it into your virtualization solution, and reconfigure
+with this minimal hardware requirements:</p>
+
+<ul>
+<li>512MB of RAM for every OpenSwitch container that you plan to run. For our examples 6GB of RAM should be enough.</li>
+<li>2 CPU cores. If you can afford more, the better.</li>
+</ul>
+
+
+<p>If you are behind a corporate firewall, be sure to turn on the VM, and using the menu displayed when the VM boots,
+configure the proxy settings.</p>
+
+<p><img class="center no-border" src="/images/gns3containers/proxy.png"></p>
+
+<h2>Configure GNS3 to use the VM</h2>
+
+<p>If you haven&rsquo;t already, install GNS3 downloading <a href="https://github.com/GNS3/gns3-gui/releases">from here</a>
+(be sure to use the same version as the VM image that you downloaded).</p>
+
+<p>When configuring GNS3, the wizard doesn&rsquo;t allow you to configure a remote server GNS3 VM, but
+you can abort the wizard, and add it later from the preferences panel (the IP address of
+the VM is show on the information page displayed by the VM on boot, or available from the
+text menu on the VM as well).</p>
+
+<p><div class="callout bottom-left">
+I found that when working behind a proxy, the VM only works well as a remote server,
+since somehow the communication with it cannot be established by the UI in the presense
+of a proxy (I have only experienced this with <strike>OS-X</strike>macOS environment, not sure if
+happens on Windows or Linux).
+</div></p>
+
+<p><img class="center no-border" src="/images/gns3containers/gns3vm-preferences.png"></p>
+
+<h1>Using the OpenSwitch Docker Appliance with GNS3</h1>
+
+<p>In order to use OpenSwitch as a container with GNS3, you have to main options:
+use an existing image (easier one), or build a custom one from scratch (useful for developers).</p>
+
+<h2>Using an Existing OpenSwitch Container Image</h2>
+
+<p>Let&rsquo;s focus on the simple procedure first. Fortunately we no longer need to specify multiple
+parameters on the UI to create a template, since for Docker containers we can use
+a pre-defined template appliance (.gns3a file), that will do all the configuration
+for you.</p>
+
+<ul>
+<li><p>First, download a GNS3 appliance template from the list
+<a href="https://archive.openswitch.net/gns3/">available here</a>.</p></li>
+<li><p>Next, import it into GNS3: there is a new &lsquo;Import appliance template&rsquo; button under
+the device panel.</p>
+
+<p><img class="center no-border" src="/images/gns3containers/import1.png"></p>
+
+<p>Select &lsquo;Import an appliance template file&rsquo;</p>
+
+<p><img class="center no-border" src="/images/gns3containers/import2.png"></p>
+
+<p>Select the template that you downloaded, and follow the rest of the wizard. Select
+to run on the remote server running the GNS3 VM.</p>
+
+<p><img class="center no-border" src="/images/gns3containers/import3.png"></p></li>
+</ul>
+
+
+<p><img class="img-right-callout <a" src="href="https://archive.openswitch.net/logo/OpenSwitchDockerStencil.png">https://archive.openswitch.net/logo/OpenSwitchDockerStencil.png</a>"></p>
+
+<p>Once you are done with the import, you can download a custom stencil for OpenSwitch
+Docker Appliance <a href="https://archive.openswitch.net/logo/OpenSwitchDockerStencil.png">from here</a>,
+and customize the template to use it.</p>
+
+<p>The template uses by default 8 ports, but that can be adjusted in per machine instance.</p>
+
+<p>That&rsquo;s all it takes, you are ready to drag &amp; drop container instances into GNS3!</p>
+
+<h2>Creating a custom Container Image</h2>
+
+<p>In the previous step where we used the .gns3a file, it points to a published version
+of the container in the Docker Hub, but you may want to create your own container from
+scratch with the latest code or modifications. If that is not the case, you can skip
+this section.</p>
+
+<p>First you will have to build an image for the appliance target as explained in
+previous articles (you can also download the tarball for a periodic build from
+the <a href="https://archive.openswitch.net/artifacts">artifact archives</a>).</p>
+
+<p><div class="callout bottom-left">
+An important clarification: if you are a developer from OpenSwitch, you may be used
+to know the &lsquo;genericx86-64&rsquo; target as the container image used for testing purposes. However
+on GNS3, we actually use the OpenSwitch Appliance images. This have implications on the
+naming of the ports (ports are called ethX).
+</div></p>
+
+<p>Now, the default tarball created for the appliance is designed to run in a VM, so
+it needs some small modifications to run properly on a container. I have automated
+the steps in a <a href="https://github.com/ddompe/ops-gns3-docker/blob/master/openswitch/Dockerfile">docker file here</a>.</p>
+
+<p>Here are the example commands to create a custom image with the latest code from
+master and push into the docker hub (in this example I use my docker hub account):
+<code>
+mkdir ops-gns3-docker
+curl https://archive.openswitch.net/artifacts/periodic/master/latest/appliance/openswitch-appliance-image-appliance-ops-0.4.0-master+2016063012.tar.gz &gt; openswitch-appliance-image.tar.gz
+wget https://raw.githubusercontent.com/ddompe/ops-gns3-docker/master/openswitch/Dockerfile
+docker build -t ddompe/openswitch-appliance:latest .
+docker login
+docker push ddompe/openswitch-appliance:latest
+</code></p>
+
+<p>Now you can modify the gns3a file provided in the previous step and point to your
+customized image to import it into GNS3.</p>
+
+<h1>Creating a topology for Ansible experimentation</h1>
+
+<p>Now, let&rsquo;s create a topology for creating a DC Fabric simulation with Ansible similar
+to the one described in the <a href="http://aleph1linux.local:4000/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">previous article using virtual machine appliances</a>.</p>
+
+<p>I have created a docker container that already automated all the steps detailed in
+the previous article, and is suitable to be run as a systemd container. The Dockerfile
+could be found <a href="https://github.com/ddompe/ops-gns3-docker/tree/master/dc-controller">here</a>, and
+the GNS3 template file <a href="https://archive.openswitch.net/gns3/ansible-controller.gns3a">here</a>.</p>
+
+<p>Unlike the previous examples using VirtualBox, we cannot longer use the cloud element
+to get a NAT connection to the external world, so instead we will use the
+<a href="https://www.gns3.com/marketplace/appliance/internet-for-gns3vm">GNS3 Internet VM Appliance</a>.</p>
+
+<p>After installing those two templates, we can recreate the DC fabric similar to the one
+from the previous article, with the difference that is (almost) all containers.</p>
+
+<p><img class="center no-border" src="/images/gns3containers/topology.png"></p>
+
+<h1>Sharing portable projects</h1>
+
+<p>Now comes another cool part, you can export and import the project to share with
+others.
+<div class="callout bottom-left">
+Yes, that means you can ignore everything I just said about importing templates
+and drawing topologies and just download a file with everything ready.
+I know I could have started saying this, but where is the fun if not in do it by
+yourself?
+</div></p>
+
+<p>So, you can export the project by using &lsquo;Export portable project&rsquo; on the file
+menu. It will ask you if you wan to include any base image, which for our example
+I would recommend we do (this will pack the qemu image used by the GNS3 Internet Appliance).
+Docker images won&rsquo;t get included on the file, but instead will be automatically
+downloaded from the docker hub when someone imports the project.</p>
+
+<p>Talking about importing the project back, there is currently a <a href="https://github.com/GNS3/gns3-gui/issues/1336">bug when importing
+the project and downloading the docker images</a>,
+where certain imports may timeout. This is fixed for 1.5.1, but in the meantime you can workaround by deleting the
+project that failed to import and re-import it again (since the docker images should
+be already downloaded, it won&rsquo;t fail the second time).</p>
+
+<p>The portable project file for the example on this article is
+<a href="https://archive.openswitch.net/gns3/dc-fabric-example.gns3project">here</a>, in case you
+want to get up an running.</p>
+
+<h1>Next Steps</h1>
+
+<p>Isn&rsquo;t all of this really exciting? Thanks to the GNS3 team for their awesome work
+and their responsiveness to fix the bug/enhancements that I keep throwing at them.</p>
+
+<p>In the next article I will continue with explaining how to use Ansible to deploy
+configuration to the topology we build here.</p>
+
+<p>Stay tuned.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Setting Up DC Fabric Simulation With OpenSwitch and GNS3]]></title>

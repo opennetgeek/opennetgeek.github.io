@@ -26,6 +26,8 @@
   <meta property="og:description" content="A blog about Open Networking">
 
   <script src="/javascripts/libs/jquery/jquery-2.1.3.min.js"></script>
+<script src="/javascripts/libs/jquery/jquery.tableofcontents.min.js"></script>
+<script src="/javascripts/generate-toc.js"></script>
 
 <link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="/assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
@@ -105,6 +107,83 @@
     <meta itemprop="description" content="A blog about Open Networking" />
     <meta itemprop="url" content="http://opennetgeek.github.io" />
       
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-06-25T23:09:46-06:00"  data-updated="true" itemprop="datePublished dateCreated">2016-06-25 23:09:46 -0600</time>
+        
+           | <a href="/blog/2016/06/25/openswitch-containers-gns3/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://opennetgeek.github.io/blog/2016/06/25/openswitch-containers-gns3/">Comments</a>
+        
+      </p>
+    
+    
+      <h2 class="entry-title" itemprop="name headline"><a href="/blog/2016/06/25/openswitch-containers-gns3/" itemprop="url">OpenSwitch Containers ♥ GNS3</a></h2>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p><img class="center" src="/images/OpenSwitchDocker.png" title="OpenSwitchDocker" alt="OpenSwitchDocker"></p>
+
+<p><div class="toc"/></p>
+
+<p>In one of my <a href="http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">previous articles</a>,
+I elaborated on a setup to create DC fabric simulations with GNS3 and OpenSwitch.
+I also promised to follow up with some post about using Ansible with it.</p>
+
+<p>Well, I have been a bit distracted with some changes to the setup before moving into
+the Ansible details (to say true, I got the Ansible article almost ready, but things
+are moving so fast, that I keep rewriting it).</p>
+
+<p>One of the things that &lsquo;change everything&rsquo; recently was the
+<a href="https://www.gns3.com/news/article/what-s-new-in-gns3-v1-5">release of GNS3 1.5</a>.
+This is a great release that includes several features that makes using OpenSwitch with GNS3 awesome:</p>
+
+<ul>
+<li>Support for Docker containers! This enables OpenSwitch to be a container instead of
+a VM, allowing to scale better:
+
+<ul>
+<li>This obviously consumes less RAM memory and use it more efficiently.</li>
+<li>We are no longer limited to 8 ports per node (VirtualBox&rsquo;s restriction), but
+instead we can have as many ports as you want. Even more, the OpenSwitch Appliance
+container will change the number of ports available, based on the GNS3 configuration.</li>
+</ul>
+</li>
+<li>Support for portable projects! Now you can export your project and shared it
+with others (restrictions apply).</li>
+</ul>
+
+
+<p>Let&rsquo;s see how to use this new release with OpenSwitch Appliance Container.</p>
+
+<p></div>
+  
+  
+    <footer>
+      <a class="read-more btn btn-default" href="/blog/2016/06/25/openswitch-containers-gns3/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
       
       
         <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -473,6 +552,8 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2016/06/25/openswitch-containers-gns3/">OpenSwitch Containers ♥ GNS3</a>
+    
     <a class="list-group-item " href="/blog/2016/05/18/openswitch-meets-p4/">OpenSwitch Meets P4</a>
     
     <a class="list-group-item " href="/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/">Setting Up DC Fabric Simulation With OpenSwitch and GNS3</a>
@@ -480,8 +561,6 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     <a class="list-group-item " href="/blog/2016/04/20/using-openswitch-appliance-with-gns3/">Using OpenSwitch Appliance With GNS3</a>
     
     <a class="list-group-item " href="/blog/2016/04/19/developing-openswitch-with-linux-vm-slash-os-x-host/">Developing OpenSwitch With Linux VM/OS X Host</a>
-    
-    <a class="list-group-item " href="/blog/2016/03/22/starting-a-blog-on-open-software-slash-hardware-plus-networking/">Starting a Blog on Open Software/Hardware + Networking</a>
     
   </div>
 </section>
@@ -500,19 +579,19 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     
     
     <a class="list-group-item " href="/blog/categories/open-source/index.html">
-        <span class="badge">1</span>
+        <span class="badge">2</span>
         open source
       </a>
     
     
     <a class="list-group-item " href="/blog/categories/openswitch/index.html">
-        <span class="badge">5</span>
+        <span class="badge">6</span>
         openswitch
       </a>
     
     
     <a class="list-group-item " href="/blog/categories/linux/index.html">
-        <span class="badge">2</span>
+        <span class="badge">3</span>
         linux
       </a>
     
@@ -530,13 +609,13 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     
     
     <a class="list-group-item " href="/blog/categories/appliance/index.html">
-        <span class="badge">2</span>
+        <span class="badge">3</span>
         appliance
       </a>
     
     
     <a class="list-group-item " href="/blog/categories/gns3/index.html">
-        <span class="badge">2</span>
+        <span class="badge">3</span>
         gns3
       </a>
     
@@ -562,6 +641,12 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
     <a class="list-group-item " href="/blog/categories/sdn/index.html">
         <span class="badge">1</span>
         sdn
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/containers/index.html">
+        <span class="badge">1</span>
+        containers
       </a>
     
   </div>
@@ -625,6 +710,8 @@ networking at Hewlett Packard Enterprise, where I have worked on networking
 
 <script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/javascripts/modernizr.js"></script>
+
+
 
 
   </body>
