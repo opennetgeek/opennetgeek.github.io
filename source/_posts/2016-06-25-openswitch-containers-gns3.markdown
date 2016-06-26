@@ -168,7 +168,7 @@ customized image to import it into GNS3.
 
 # Creating a topology for Ansible experimentation
 Now, let's create a topology for creating a DC Fabric simulation with Ansible similar
-to the one described in the [previous article using virtual machine appliances](http://aleph1linux.local:4000/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/).
+to the one described in the [previous article using virtual machine appliances](http://opennetgeek.github.io/blog/2016/05/05/setting-up-dc-fabric-simulation-with-openswitch-and-gns3/).
 
 I have created a docker container that already automated all the steps detailed in
 the previous article, and is suitable to be run as a systemd container. The Dockerfile
